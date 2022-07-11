@@ -1,0 +1,5 @@
+PyMySQL
+jmespath
+mysqlclient
+ovirt-engine-sdk-python >= 4.5.0
+netapp-lib >= 2020.3.12
