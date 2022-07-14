@@ -1,8 +1,4 @@
 FROM rockylinux:latest
-
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
-
 RUN yum check-update; \
     yum install -y gcc libffi-devel python3 epel-release; \
     yum install -y python3-pip; \
@@ -22,3 +18,6 @@ RUN python3 -m pip install --upgrade pip; \
     dnf install ansible -y; \
     ansible-galaxy install -r /tmp/requirements.yml; \
     python3 -m pip install -r /tmp/requirements-pip.txt
+RUN yum install -y yum-utils; \
+    yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo; \
+    yum install -y terraform
