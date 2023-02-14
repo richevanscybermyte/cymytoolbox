@@ -15,6 +15,7 @@ RUN yum check-update; \
     yum clean all
 COPY ./requirements.yml /tmp/requirements.yml
 COPY ./requirements-pip.txt /tmp/requirements-pip.txt
+COPY ./.ansible.cfg ~/.ansible.cfg
 RUN echo "Installing Python, Ansible and a bunch of related tools"; \
     python3 -m pip install --upgrade pip; \
     python3 -m pip install --upgrade virtualenv; \
