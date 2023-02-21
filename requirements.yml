@@ -42,7 +42,6 @@ collections:
   - name: community.general
   - name: community.mysql
   - name: community.network
-  - name: community.vmware
   - name: fedora.linux_system_roles
   - name: freeipa.ansible_freeipa
   - name: ovirt.ovirt
