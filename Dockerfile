@@ -1,4 +1,4 @@
-FROM docker.io/rockylinux:8.7.20230215
+FROM docker.io/rockylinux:8.8
 RUN yum check-update; \
     yum install -y gcc libffi-devel python3 epel-release; \
     yum install -y python3-pip; \
@@ -25,6 +25,8 @@ RUN echo "Installing Python, Ansible and a bunch of related tools"; \
 RUN echo "Downloading Kube Tools"; \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; \
     curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"; \
+    curl -LO "https://github.com/NetApp/trident/releases/download/v23.04.0/trident-installer-23.04.0.tar.gz";\
     curl -sS https://webinstall.dev/k9s | bash; \
-    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl;
-    
+    tar xfz trident-installer-23.04.0.tar.gz;\
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl;\
+    install -o root -g root -m 0755 trident-installer/tridentctl /usr/local/bin/tridentctl;
