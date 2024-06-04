@@ -27,6 +27,6 @@ RUN echo "Downloading Kube Tools"; \
     curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"; \
     curl -LO "https://github.com/NetApp/trident/releases/download/v24.02.0/trident-installer-24.02.0.tar.gz";\
     curl -sS https://webinstall.dev/k9s | bash; \
-    tar xfz trident-installer-23.04.0.tar.gz;\
+    tar xfz trident-installer-24.02.0.tar.gz;\
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl;\
     install -o root -g root -m 0755 trident-installer/tridentctl /usr/local/bin/tridentctl;
