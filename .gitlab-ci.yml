@@ -45,7 +45,8 @@ build:
     - echo "Image tag: $IMAGE_TAG"
 
     # Build and push using Kaniko
-    - /kaniko/executor
+    - >
+      /kaniko/executor
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${IMAGE_NAME}:${IMAGE_TAG}"
