@@ -8,7 +8,6 @@ collections:
   - name: community.crypto
   - name: community.dns
   - name: community.docker
-  - name: community.general
   - name: community.google
   - name: community.grafana
   - name: community.hashi_vault
@@ -22,7 +21,6 @@ collections:
   - name: community.okd
   - name: community.postgresql
   - name: community.vmware
-  - name: community.windows
   - name: community.zabbix
   - name: containers.podman
   - name: dellemc.enterprise_sonic
@@ -39,9 +37,6 @@ collections:
   - name: ansible.posix
   - name: ansible.utils
   - name: cisco.ios
-  - name: community.general
-  - name: community.mysql
-  - name: community.network
   - name: fedora.linux_system_roles
   - name: freeipa.ansible_freeipa
   - name: ovirt.ovirt
