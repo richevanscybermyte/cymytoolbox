@@ -1,4 +1,4 @@
-FROM registry.cymycloud.com/docker-proxy/rockylinux/rockylinux:9.4.20240509-ubi
+FROM rockylinux/rockylinux:9.4.20240509-ubi
 RUN dnf check-update; \
     dnf install -y gcc libffi-devel python3 epel-release; \
     dnf install -y python3-pip; \
