@@ -5,7 +5,7 @@ stages:
 
 variables:
   # Internal registry configuration
-  REGISTRY: registry.orl01.cymycloud.com
+  REGISTRY: registry.cymycloud.com
   IMAGE_NAME: $REGISTRY/cymycloud/cymytoolbox
 
   # Use Kaniko for secure, rootless container builds (no privileged mode needed)
