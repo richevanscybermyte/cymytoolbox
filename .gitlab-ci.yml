@@ -22,7 +22,6 @@ build:
     entrypoint: [""]
   script:
     - echo "Building cymytoolbox container image"
-    - echo "Target registry: $IMAGE_NAME"
     - mkdir -p $DOCKER_CONFIG
     - echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(printf \"%s:%s\" \"${CI_REGISTRY_USER}\" \"${CI_REGISTRY_PASSWORD}\" | base64 | tr -d '\n')\"}}}" > $DOCKER_CONFIG/config.json
     - |
@@ -33,16 +32,7 @@ build:
       else
         IMAGE_TAG="${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
       fi
-    - echo "Image tag: $IMAGE_TAG"
-    - >
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${IMAGE_NAME}:${IMAGE_TAG}"
-      --destination "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
-      --cache=true
-      --cache-repo="${IMAGE_NAME}/cache"
-      --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_NAME}:${IMAGE_TAG}" --destination "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}" --cache=true --cache-repo="${IMAGE_NAME}/cache" --cleanup
 
   tags:
     - tenant-platform-runner
