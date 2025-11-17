@@ -1,4 +1,4 @@
-FROM docker.io/rockylinux:9.4.20240509-ubi
+FROM rockylinux/rockylinux:9.4.20240509-ubi
 RUN yum check-update; \
     yum install -y gcc libffi-devel python3 epel-release; \
     yum install -y python3-pip; \
