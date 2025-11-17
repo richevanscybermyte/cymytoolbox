@@ -32,7 +32,7 @@ build:
       else
         IMAGE_TAG="${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
       fi
-    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_NAME}:${IMAGE_TAG}" --destination "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}" --cache=true --cache-repo="${IMAGE_NAME}/cache" --cleanup
+    - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --destination "${IMAGE_NAME}:${IMAGE_TAG}" --destination "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}" --cache=true --cache-repo="${IMAGE_NAME}/cache" --skip-tls-verify-registry="${REGISTRY}" --cleanup
 
   tags:
     - tenant-platform-runner
