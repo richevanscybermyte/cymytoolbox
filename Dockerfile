@@ -1,27 +1,27 @@
-FROM rockylinux/rockylinux:9.4.20240509-ubi
-RUN yum check-update; \
-    yum install -y gcc libffi-devel python3 epel-release; \
-    yum install -y python3-pip; \
-    yum install -y bash wget curl tar openssh-clients sshpass; \
-    yum install -y python3-dateutil python3-jinja2 python3-pyyaml; \
-    yum install -y python3-wheel ca-certificates openssl-devel; \
-    yum install -y mariadb; \
-    yum install -y python3-devel libffi-devel; \
-    yum install -y mariadb-devel; \
-    yum install -y python3-pycurl; \
-    yum install -y libxml2-devel; \
-    yum install -y libxml2; \
-    yum install -y git aggregate6; \
-    yum clean all
+FROM registry.cymycloud.com/docker-proxy/rockylinux/rockylinux:9.4.20240509-ubi
+RUN dnf check-update; \
+    dnf install -y gcc libffi-devel python3 epel-release; \
+    dnf install -y python3-pip; \
+    dnf install -y bash wget curl tar openssh-clients sshpass net-tools; \
+    dnf install -y python3-dateutil python3-jinja2 python3-pyyaml; \
+    dnf install -y python3-wheel ca-certificates openssl-devel; \
+    dnf install -y mariadb; \
+    dnf install -y python3-devel libffi-devel; \
+    dnf install -y mariadb-connector-c-devel pkgconf-pkg-config; \
+    dnf install -y python3-pycurl; \
+    dnf install -y libxml2-devel; \
+    dnf install -y libxml2; \
+    dnf install -y git aggregate6; \
+    dnf clean all
 COPY ./requirements.yml /tmp/requirements.yml
 COPY ./requirements-pip.txt /tmp/requirements-pip.txt
 COPY ./.ansible.cfg ~/.ansible.cfg
 RUN echo "Installing Python, Ansible and a bunch of related tools"; \
     python3 -m pip install --upgrade pip; \
     python3 -m pip install --upgrade virtualenv; \
-    dnf install ansible -y; \
+    dnf makecache && dnf install ansible -y; \
     ansible-galaxy install -r /tmp/requirements.yml; \
-    python3 -m pip install -r /tmp/requirements-pip.txt;
+    python3 -m pip install --ignore-installed packaging -r /tmp/requirements-pip.txt;
 RUN echo "Downloading Kube Tools"; \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; \
     curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"; \

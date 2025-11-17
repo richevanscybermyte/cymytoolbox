@@ -1,0 +1,83 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  # Internal registry configuration
+  REGISTRY: registry.orl01.cymycloud.com
+  IMAGE_NAME: $REGISTRY/cymycloud/cymytoolbox
+
+  # Use Kaniko for secure, rootless container builds (no privileged mode needed)
+  KANIKO_IMAGE: gcr.io/kaniko-project/executor:v1.23.2-debug
+
+  # Docker configuration for Kaniko
+  DOCKER_CONFIG: /kaniko/.docker
+
+# Build and push Docker image using Kaniko (rootless, secure)
+build:
+  stage: build
+  image:
+    name: $KANIKO_IMAGE
+    entrypoint: [""]
+  script:
+    - echo "Building cymytoolbox container image"
+    - echo "Target registry: $IMAGE_NAME"
+
+    # Create Docker config directory for authentication
+    - mkdir -p $DOCKER_CONFIG
+
+    # Use GitLab CI registry credentials (automatically provided)
+    - echo "{\"auths\":{\"$REGISTRY\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > $DOCKER_CONFIG/config.json
+
+    # Determine image tags
+    - |
+      if [ -n "$CI_COMMIT_TAG" ]; then
+        # If this is a git tag, use it as the image tag
+        IMAGE_TAG="$CI_COMMIT_TAG"
+      elif [ "$CI_COMMIT_BRANCH" = "$CI_DEFAULT_BRANCH" ]; then
+        # If this is the default branch (main/master), tag as 'latest'
+        IMAGE_TAG="latest"
+      else
+        # For other branches, use branch name and short commit SHA
+        IMAGE_TAG="${CI_COMMIT_REF_SLUG}-${CI_COMMIT_SHORT_SHA}"
+      fi
+
+    - echo "Image tag: $IMAGE_TAG"
+
+    # Build and push using Kaniko
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${IMAGE_NAME}:${IMAGE_TAG}"
+      --destination "${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
+      --cache=true
+      --cache-repo="${IMAGE_NAME}/cache"
+      --cleanup
+
+  tags:
+    - tenant-platform-runner
+
+  rules:
+    # Run on commits to main branch
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    # Run on tags (for versioned releases)
+    - if: '$CI_COMMIT_TAG'
+    # Run on merge requests
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+# Optional: Deploy or notify on successful build
+deploy:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo "Image successfully built and pushed to $IMAGE_NAME"
+    - echo "Available tags:"
+    - echo "  - ${IMAGE_NAME}:latest (if main branch)"
+    - echo "  - ${IMAGE_NAME}:${CI_COMMIT_SHORT_SHA}"
+
+  tags:
+    - tenant-platform-runner
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_TAG'
