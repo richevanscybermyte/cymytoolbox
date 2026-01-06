@@ -57,6 +57,7 @@ RUN dnf install -y \
     git \
     mariadb-connector-c \
     libxml2 \
+    openldap-clients \
     epel-release && \
     dnf makecache && \
     dnf install -y aggregate6 && \
