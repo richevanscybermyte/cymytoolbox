@@ -91,10 +91,15 @@ COPY --from=builder /usr/local/lib64/python3.9/site-packages/ /usr/local/lib64/p
 COPY --from=builder /usr/lib64/python3.9/site-packages/ /usr/lib64/python3.9/site-packages/
 COPY --from=builder /usr/local/bin/ansible* /usr/local/bin/
 
+# Add CyMyCloud internal CA certificate for OpenBao, internal services, etc.
+COPY cymycloud-ca.crt /etc/pki/ca-trust/source/anchors/cymycloud-ca.crt
+RUN update-ca-trust extract
+
 # Create a non-root user and set up ansible directories
 RUN useradd -ms /bin/bash ansible && \
     mkdir -p /home/ansible/.ansible/collections && \
-    chown -R ansible:ansible /home/ansible/.ansible
+    mkdir -p /home/ansible/.kube && \
+    chown -R ansible:ansible /home/ansible/.ansible /home/ansible/.kube
 
 # Copy ansible collections with proper ownership
 COPY --from=builder --chown=ansible:ansible /root/.ansible/collections/ /home/ansible/.ansible/collections/
